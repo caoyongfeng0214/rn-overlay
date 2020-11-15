@@ -99,6 +99,7 @@ class App extends React.Component {
             onClose: function() {
                 console.log('Overlay closed');
                 setTimeout(() => {
+                    // the [ this ] is the instance of Overlay. this === overlay variable
                     this.show(); // show it again
                 }, 3000);
             }
