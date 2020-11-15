@@ -4,7 +4,11 @@ Overlay component for React Native, same as Modal component.
 
 you can place it to anywhere, it will float in front of all views. it can be place to a Modal component and cover the Modal component.
 
+Demo:
+
 ![react-native-overlay demo](https://user-images.githubusercontent.com/14923844/99188648-ffcb7180-2797-11eb-91a3-4f5dd88eadf0.gif)
+
+[Demo Source Code](https://github.com/caoyongfeng0214/rn-overlay/wiki/Demo-Source-Code)
 
 # Installation
 
