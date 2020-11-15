@@ -91,7 +91,7 @@ if(!ReactNative.Overlay) {
             }
             Object.defineProperty(this, '$Father', {
                 get: function() {
-                    return this.__noOwner__ === true ? (Modals[0] || React.APPCMP) : father;
+                    return this.props.__noOwner__ === true ? (Modals[0] || React.APPCMP) : father;
                 }
             });
             this.visible = !!this.props.visible;
@@ -193,7 +193,10 @@ if(!ReactNative.Overlay) {
     let Modals = [];
 
     let newModal = function(modal) {
-        Modals.push(modal);
+        let idx = Modals.findIndex((T) => T == modal);
+        if(idx < 0) {
+            Modals.push(modal);
+        }
     };
 
     let delModal = function(modal) {
