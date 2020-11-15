@@ -82,7 +82,7 @@ class App extends React.Component {
 
     onOverlayShowClick = () => {
         // Overlay.show() will create a instance of Overlay and show it.
-        // if a Modal component is shown, the Overlay will cover the Modal component.
+        // if a Modal component is showing, the Overlay will cover the Modal component.
         let overlay = Overlay.show({
             // style of the Overlay
             style: {
