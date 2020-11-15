@@ -1,6 +1,6 @@
 # rn-overlay | react-native-overlay
 
-Overlay component for React Native, like Modal component.
+Overlay component for React Native, same as Modal component.
 
 you can place it to anywhere, it will float in front of all views. it can be place to a Modal component and cover the Modal component.
 
@@ -122,7 +122,7 @@ export default App;
 # Props
 
 ### style
-`Object`. The style of overlay. like [View Component](https://reactnative.dev/docs/view)
+`Object`. The style of overlay. same as [View Component](https://reactnative.dev/docs/view) .
 
 ### visible
 `Boolean`. The `visible` prop determines whether your `Overlay` is visible. default value: `false`.
