@@ -1,6 +1,6 @@
 {
   "name": "rn-overlay",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Overlay component for React Native, same as Modal component.",
   "main": "index.js",
   "scripts": {
