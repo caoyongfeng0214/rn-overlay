@@ -28,7 +28,7 @@ if(!ReactNative.Overlay) {
 
         // show a Overlay
         static show = function({ style, children, onShow, onClose }) {
-            let overlay = new ReactNative.Overlay({ style, children, onShow, onClose, __father__: Modals[0] });
+            let overlay = new ReactNative.Overlay({ style, children, onShow, onClose, __noOwner__: true });
             overlay.componentDidMount();
             overlay.show();
             return overlay;
@@ -60,8 +60,6 @@ if(!ReactNative.Overlay) {
                     }
                 }
             });
-
-            this.__father__ = props.__father__;
         }
       
         get $View() {
@@ -79,22 +77,23 @@ if(!ReactNative.Overlay) {
         }
       
         componentDidMount() {
-            let father = this.__father__;
-            if(!father) {
-                father = React.APPCMP;
-                if(this.context && this.context.$MODAL) {
-                    father = this.context.$MODAL;
-                    // let onDismiss = father.onDismiss;
-                    // let _this = this;
-                    // father.onDismiss = function() {
-                    //     _this.close();
-                    //     if(onDismiss) {
-                    //         onDismiss.apply(father, arguments);
-                    //     }
-                    // };
-                }
+            let father = React.APPCMP;
+            if(this.context && this.context.$MODAL) {
+                father = this.context.$MODAL;
+                // let onDismiss = father.onDismiss;
+                // let _this = this;
+                // father.onDismiss = function() {
+                //     _this.close();
+                //     if(onDismiss) {
+                //         onDismiss.apply(father, arguments);
+                //     }
+                // };
             }
-            Object.defineProperty(this, '$Father', { get: function() {return father;} });
+            Object.defineProperty(this, '$Father', {
+                get: function() {
+                    return this.__noOwner__ === true ? (Modals[0] || React.APPCMP) : father;
+                }
+            });
             this.visible = !!this.props.visible;
         }
       
