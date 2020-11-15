@@ -4,6 +4,8 @@ Overlay component for React Native, same as Modal component.
 
 you can place it to anywhere, it will float in front of all views. it can be place to a Modal component and cover the Modal component.
 
+Contact me: me@caoyongfeng.com
+
 Demo:
 
 ![react-native-overlay demo](https://user-images.githubusercontent.com/14923844/99188648-ffcb7180-2797-11eb-91a3-4f5dd88eadf0.gif)
@@ -61,7 +63,7 @@ class App extends React.Component {
                 onShow={this.onOverlayShow}
                 // callback function when the Overlay closed
                 onClose={this.onOverlayClose}
-                // style of the Overlay, like View component
+                // style of the Overlay, same as View component
                 style={{justifyContent:"center"}}>
                     <View style={{paddingVertical:80, backgroundColor:"white"}}>
                         <Button title="Close the Overlay" onPress={() => this.setState({ overlayVisible: false })}/>
