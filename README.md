@@ -70,6 +70,50 @@ export default App;
 
 You can also use it in js code:
 
+```js
+import React from 'react';
+// the Overlay is rn-overlay
+import { View, Button, Overlay } from 'react-native';
+
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    onOverlayShowClick = () => {
+        // Overlay.show() will create a instance of Overlay and show it
+        let overlay = Overlay.show({
+            // style of the Overlay
+            style: {
+                justifyContent: 'center'
+            },
+            // content of the Overlay
+            children: <View style={{paddingVertical:80, backgroundColor:"white"}}>
+                <Button title="Close the Overlay" onPress={() => { overlay.close(); }}/>
+            </View>,
+            // callback function when the Overlay shown
+            onShow: () => {
+                console.log('Overlay shown');
+            },
+            // callback function when the Overlay closed
+            onClose: function() {
+                console.log('Overlay closed');
+                setTimeout(() => {
+                    this.show(); // show it again
+                }, 3000);
+            }
+        });
+    }
+
+    render() {
+        return <View style={{paddingTop: 200}}>
+            <Button title="Show a Overlay" onPress={this.onOverlayShowClick}/>
+        </View>;
+    }
+}
+
+export default App;
+```
 
 # Props
 
