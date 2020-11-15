@@ -2,7 +2,7 @@
 
 Overlay component for React Native, like Modal component.
 
-you can place it to anywhere, it will float in front of all views.
+you can place it to anywhere, it will float in front of all views. it can be placed to a Modal component and cover the Modal component.
 
 # Installation
 
@@ -81,7 +81,8 @@ class App extends React.Component {
     }
 
     onOverlayShowClick = () => {
-        // Overlay.show() will create a instance of Overlay and show it
+        // Overlay.show() will create a instance of Overlay and show it.
+        // if a Modal component is shown, the Overlay will cover the Modal component.
         let overlay = Overlay.show({
             // style of the Overlay
             style: {
