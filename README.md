@@ -25,52 +25,45 @@ AppRegistry.registerComponent(appName, () => App);
 
 ```js
 import React from 'react';
+// the Overlay is rn-overlay
 import { View, Button, Overlay } from 'react-native';
 
-
 class App extends React.Component {
-
     constructor(props) {
         super(props);
 
         this.state = {
-          overlayVisible: false
-        }
+            overlayVisible: false // control visible of Overlay
+        };
     }
 
-    btnClick = () => {
-      this.setState({
-        overlayVisible: true
-      });
+    onOverlayShow() {
+        console.log('Overlay shown');
     }
 
-    btnHideClick = () => {
-      this.setState({
-        overlayVisible: false
-      });
-    }
-    
-    onOverlayShow = () => {
-      console.log('Overlay shown');
-    }
-    
-    onOverlayClose = () => {
-      console.log('Overlay closed');
+    onOverlayClose() {
+        console.log('Overlay closed');
     }
 
     render() {
-        return (
-            <View style={{paddingVertical:100}}>
-              <Button title="Show Overlay" onPress={this.btnClick}/>
-              <Overlay onShow={this.onOverlayShow} onClose={this.onOverlayClose} visible={this.state.overlayVisible} style={{paddingTop:280}}>
-                <View style={{backgroundColor:"white"}}>
-                  <Button title="Hide Overlay" onPress={this.btnHideClick}/>
-                </View>
-              </Overlay>
-            </View>
-        );
+        return <View style={{paddingTop: 200}}>
+            <Button title="Show a Overlay" onPress={() => this.setState({ overlayVisible: true })}/>
+            <Overlay
+                // visible or hide the Overlay
+                visible={this.state.overlayVisible}
+                // callback function when the Overlay shown
+                onShow={this.onOverlayShow}
+                // callback function when the Overlay closed
+                onClose={this.onOverlayClose}
+                // style of the Overlay, like View component
+                style={{justifyContent:"center"}}>
+                    <View style={{paddingVertical:80, backgroundColor:"white"}}>
+                        <Button title="Close the Overlay" onPress={() => this.setState({ overlayVisible: false })}/>
+                    </View>
+            </Overlay>
+        </View>;
     }
-};
+}
 
 export default App;
 ```
