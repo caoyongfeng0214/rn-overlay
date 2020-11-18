@@ -173,7 +173,9 @@ if(!ReactNative.Overlay) {
             }
         
             addOrUpdateOverlay(overlay) {
-                this.overlayContainer.addOrUpdateChild(overlay);
+                if(this.overlayContainer) {
+                    this.overlayContainer.addOrUpdateChild(overlay);
+                }
             }
         
             render() {
