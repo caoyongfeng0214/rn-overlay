@@ -1,4 +1,4 @@
-import { View, ScrollView, Modal, AppRegistry, I18nManager, StyleSheet } from 'react-native';
+import { View, ScrollView, Modal, AppRegistry, I18nManager, StyleSheet, Platform } from 'react-native';
 import RCTModalHostView from '../react-native/Libraries/Modal/RCTModalHostViewNativeComponent';
 const AppContainer = require('../react-native/Libraries/ReactNative/AppContainer');
 
@@ -178,8 +178,17 @@ if(!ReactNative.Overlay) {
         
             render() {
                 return <>
-                    <OverlayContainer ref={ele => this.overlayContainer = ele}/>
+                    {
+                        Platform.OS === 'ios'
+                        &&
+                        <OverlayContainer ref={ele => this.overlayContainer = ele}/>
+                    }
                     <Cmp/>
+                    { // on Android, [ zIndex ] behaves strangely. OverlayContainer must be place to last 
+                        Platform.OS === 'android'
+                        &&
+                        <OverlayContainer ref={ele => this.overlayContainer = ele}/>
+                    }
                 </>;
             }
         };

@@ -1,6 +1,6 @@
 {
   "name": "rn-overlay",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Overlay component for React Native, same as Modal component.",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "react-native",
     "overlay",
     "fixed",
-    "rn"
+    "RN"
   ],
   "author": "me@caoyongfeng.com",
   "license": "ISC",
