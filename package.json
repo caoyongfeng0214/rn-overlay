@@ -14,7 +14,8 @@
     "react-native",
     "overlay",
     "fixed",
-    "RN"
+    "RN",
+    "float"
   ],
   "author": "me@caoyongfeng.com",
   "license": "ISC",
