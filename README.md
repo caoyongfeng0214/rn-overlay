@@ -72,9 +72,12 @@ class App extends React.Component {
 export default App;
 ```
 
+---
 **Why not use prop `visible` to control the display status of Overlay ?**
 
 > **Overlay** does not belong to any **Screen**. if allowed to do that, it will easily cause confusion.
+---
+
 
 You can also use it in js code:
 
@@ -206,6 +209,9 @@ if the Overlay is shown in multiple **Screens**, the above code will not work pr
         });
 ```
 
+---
+
+
 # Props
 
 ### style
@@ -219,6 +225,10 @@ if the Overlay is shown in multiple **Screens**, the above code will not work pr
 
 ### onClose
 `Function`. The `onClose` prop allows passing a function that will be called once the `Overlay` has been closed.
+
+
+---
+
 
 # Static Methods
 
@@ -238,6 +248,10 @@ create a instance of Overlay and show it.
 &emsp;&emsp;&emsp;&emsp;***onShow:*** `Function`. The `onShow` prop allows passing a function that will be called once the `Overlay` has been shown.
 
 &emsp;&emsp;&emsp;&emsp;***onClose:*** `Function`. The `onClose` prop allows passing a function that will be called once the `Overlay` has been closed.
+
+
+---
+
 
 # Instance Methods
 
