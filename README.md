@@ -132,7 +132,7 @@ if content of the Overlay contains dynamic data, then should pass a `function` t
 
 ```js
 import React from 'react';
-import { View, Button, Overlay } from 'react-native';
+import { View, Button, Text, Overlay } from 'react-native';
 
 class App extends React.Component {
     constructor(props) {
