@@ -228,6 +228,12 @@ if the Overlay is shown in multiple **Screens**, the above code will not work pr
 ### onClose
 `Function`. The `onClose` prop allows passing a function that will be called once the `Overlay` has been closed.
 
+### enableBackPress
+`Boolean`. if true, allow press Back Nav at bottom of Android. default value: `false`.
+
+### scopeState
+`Object`. state of the instance of the Overlay.
+
 
 ---
 
@@ -250,6 +256,8 @@ create a instance of Overlay and show it.
 &emsp;&emsp;&emsp;&emsp;***onShow:*** `Function`. The `onShow` prop allows passing a function that will be called once the `Overlay` has been shown.
 
 &emsp;&emsp;&emsp;&emsp;***onClose:*** `Function`. The `onClose` prop allows passing a function that will be called once the `Overlay` has been closed.
+
+&emsp;&emsp;&emsp;&emsp;***enableBackPress:*** `Boolean`. if true, allow press Back Nav at bottom of Android. default value: `false`.
 
 
 ---
