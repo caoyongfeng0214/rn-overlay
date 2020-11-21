@@ -1,10 +1,20 @@
 # rn-overlay | react-native-overlay
 
-Overlay component for React Native, same as Modal component.
+Overlay component for React Native, same as [Modal component](https://reactnative.dev/docs/modal).
 
 you can place it to anywhere, it will float in front of all views. it can be place to a Modal component and cover the Modal component.
 
 Contact me: me@caoyongfeng.com
+
+---
+
+**Why create this package ? **
+
+> * [Modal component](https://reactnative.dev/docs/modal) are not applicable in some scenarios.
+  * Why do UI components need to reference native modules ? e.g. [Toast](https://reactnative.dev/docs/toastandroid)、[Picker](https://github.com/react-native-picker/picker) ......
+  * Why are the development and experience of Android and iOS inconsistent ? e.g. [Picker](https://github.com/react-native-picker/picker) ......
+
+---
 
 Demo:
 
