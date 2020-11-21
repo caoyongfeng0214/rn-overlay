@@ -17,18 +17,19 @@ if (!React) {
 if(!ReactNative.Overlay) {
 
     // props:
-    //      visible: Boolean, 
+    //      visible: Boolean, Default display status of the Overlay. default value: false.
     //      style: Object, style of Overlay, same as View
     //      onShow: Function, callback function be fire when Overlay shown
     //      onClose: Function,  callback funtion be fire where Overlay closed
+    //      enableBackPress: Boolean, if true, allow press Back Nav at bottom of Android. default value: false
     ReactNative.Overlay = class extends React.Component {
         static contextType = ScrollView.Context;
 
         static INDEX = 0; // for generate OverlayName
 
         // show a Overlay
-        static show = function({ style, scopeState, children, onShow, onClose }) {
-            let overlay = new ReactNative.Overlay({ style, scopeState, children, onShow, onClose, __noOwner__: true });
+        static show = function({ style, scopeState, children, onShow, onClose, enableBackPress }) {
+            let overlay = new ReactNative.Overlay({ style, scopeState, children, onShow, onClose, enableBackPress, __noOwner__: true });
             overlay.componentDidMount();
             overlay.show();
             return overlay;
@@ -40,8 +41,6 @@ if(!ReactNative.Overlay) {
 
             let _name = '_overlay_' + (++ReactNative.Overlay.INDEX);
             Object.defineProperty(this, '$Name', { get: function() {return _name;} });
-
-            let _hardwareBackPressHandler = undefined;
 
             let _visible = false;
             Object.defineProperty(this, 'visible', {
@@ -68,9 +67,11 @@ if(!ReactNative.Overlay) {
                 }
             });
 
+            let _hardwareBackPressHandler = undefined;
+
             // disable BackPress
             this.disableBackPress = () => {
-                if(!_hardwareBackPressHandler) {
+                if(this.props.enableBackPress !== true && !_hardwareBackPressHandler) {
                     _hardwareBackPressHandler = BackHandler.addEventListener("hardwareBackPress", () => {
                         return true;
                     });
@@ -145,6 +146,7 @@ if(!ReactNative.Overlay) {
     }
 
 
+    // this is really displayed
     class OverlayItem extends React.Component {
         constructor(props) {
             super(props);
