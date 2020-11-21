@@ -8,7 +8,7 @@ Contact me: me@caoyongfeng.com
 
 ---
 
-**Why create this package ? **
+**Why create this package ?**
 
 > * [Modal component](https://reactnative.dev/docs/modal) are not applicable in some scenarios.
 > * Why do UI components need to reference native modules ? e.g. [Toast](https://reactnative.dev/docs/toastandroid)、[Picker](https://github.com/react-native-picker/picker) ......
