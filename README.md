@@ -49,7 +49,7 @@ AppRegistry.registerComponent(appName, () => App);
 
 # Usage
 
-**[Toast](https://github.com/caoyongfeng0214/rn-overlay/wiki/Toast)**
+* **[Toast](https://github.com/caoyongfeng0214/rn-overlay/wiki/Toast)**
 
 ```js
 import React from 'react';
