@@ -48,6 +48,8 @@ AppRegistry.registerComponent(appName, () => App);
 
 # Usage
 
+**[Toast](https://github.com/caoyongfeng0214/rn-overlay/wiki/Toast)**
+
 ```js
 import React from 'react';
 // the Overlay is rn-overlay
