@@ -25,7 +25,7 @@ Demo:
 
 # TODOs
 
-* Toast
+* ~~Toast~~ (done)
 * Picker
 * DateTime
 
