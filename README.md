@@ -26,6 +26,7 @@ Demo:
 # TODOs
 
 * ~~Toast~~ (done)
+* MsgBox
 * Picker
 * DateTime
 
