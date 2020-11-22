@@ -18,7 +18,7 @@ Contact me: me@caoyongfeng.com
 
 Demo:
 
-![react-native-overlay demo](https://user-images.githubusercontent.com/14923844/99891454-c49fd580-2ca4-11eb-87a8-3fe25e2b1510.png)
+![react-native-overlay demo](https://user-images.githubusercontent.com/14923844/99891471-06c91700-2ca5-11eb-8573-10f15b954b02.gif)
 
 [Demo Source Code](https://github.com/caoyongfeng0214/rn-overlay/wiki/Demo-Source-Code)
 
