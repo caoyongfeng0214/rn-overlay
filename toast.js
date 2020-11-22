@@ -128,6 +128,15 @@ class Toast {
                         });
                     }, duration);
                 });
+
+                if(options.onShow && options.onShow instanceof Function) {
+                    options.onShow.apply(window, []);
+                }
+            },
+            onClose: function() {
+                if(options.onClose && options.onClose instanceof Function) {
+                    options.onClose.apply(window, []);
+                }
             }
         });
     };
