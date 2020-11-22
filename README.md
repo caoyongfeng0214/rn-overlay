@@ -35,12 +35,12 @@ Demo:
 import the Overlay component in the lauche file （`PROJECT/index.js`）
 
 ```js
+// import rn-overlay in the first line, this will save some trouble.
+import 'rn-overlay';
+
 import {AppRegistry} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
-
-// add follow line, import rn-overlay
-import 'rn-overlay';
 
 AppRegistry.registerComponent(appName, () => App);
 ```
