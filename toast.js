@@ -27,6 +27,8 @@ class Toast {
     //      easingDuration: the duration of the animate easing. millisecond. default value: 680
     //      position: Toast.Position enums. the position of the toast.
     //          [ Toast.Position.Left | Toast.Position.Right | Toast.Position.Top | Toast.Position.Bottom | Toast.Position.LeftTop | Toast.Position.LeftBottom | Toast.Position.RightTop | Toast.Position.RightBottom ]
+    //      onShow: Function. callback function when the Toast shown
+    //      onClose: Function. callback function when the Toast closed
     static show = function(msg, duration, options) {
         msg = msg || '';
 
