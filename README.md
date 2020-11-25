@@ -10,8 +10,8 @@ Contact me: me@caoyongfeng.com
 
 **Why create this package ?**
 
-> * [Modal component](https://reactnative.dev/docs/modal) are not applicable in some scenarios.
-> * Why do some UI components need to reference native modules ? e.g. [Toast](https://reactnative.dev/docs/toastandroid)、[Picker](https://github.com/react-native-picker/picker) ......
+> * [Modal component](https://reactnative.dev/docs/modal) is not applicable in some scenarios.
+> * Why some UI components need to reference native modules ? e.g. [Toast](https://reactnative.dev/docs/toastandroid)、[Picker](https://github.com/react-native-picker/picker) ......
 > * Why are the development and experience of Android and iOS inconsistent ? e.g. [Picker](https://github.com/react-native-picker/picker) ......
 
 ---
@@ -34,7 +34,7 @@ Demo:
 
 `npm install rn-overlay --save`
 
-import the Overlay component in the lauche file （`PROJECT/index.js`）
+import the `rn-overlay` package in the lauche file （`PROJECT/index.js`）
 
 ```js
 // import rn-overlay in the first line, this will save some trouble.
@@ -103,7 +103,7 @@ You can also use it in js code:
 
 ```js
 import React from 'react';
-// the Overlay is rn-overlay
+// the [ Overlay ] is rn-overlay
 import { View, Button, Overlay } from 'react-native';
 
 class App extends React.Component {
