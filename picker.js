@@ -80,8 +80,6 @@ const AngleSin = Math.sin(Angle / 2 * Math.PI / 180);
 //      confirmText: String.
 //      focusBoxBorderColor: String(color). borderColor of container of current selected item
 //      head: Component or function.
-//      input: Component or function.
-//      item: Component or function.
 //      items: Array. item: { label: 'xxxxx', value: 9 }
 //      onShow: function. callback funtion on shown
 //      onClose: function. callback function on closed
@@ -462,7 +460,7 @@ class Picker extends React.Component {
             displayText = this.displayText;
         if(!displayText) {
             let textColor = this.props.placeholderColor;
-            if(!textColor) {
+            if(textColor) {
                 inputStyle.color = textColor;
             }
             if(this.props.placeholder) {
