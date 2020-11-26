@@ -80,6 +80,8 @@ const AngleSin = Math.sin(Angle / 2 * Math.PI / 180);
 //      confirmText: String.
 //      focusBoxBorderColor: String(color). borderColor of container of current selected item
 //      head: Component or function.
+//      input: Component or function.
+//      item: Component or function.
 //      items: Array. item: { label: 'xxxxx', value: 9 }
 //      onShow: function. callback funtion on shown
 //      onClose: function. callback function on closed
@@ -101,7 +103,8 @@ class Picker extends React.Component {
         height: 32,
         width: '100%',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        overflow: 'hidden'
     };
 
     static defaultItemTextStyle = {
@@ -295,16 +298,35 @@ class Picker extends React.Component {
                         <View style={containerStyle}>
                             <View style={{...ItemsBox_Style, height: itemsBoxHeight}}>
                                 {
-                                    items.map((T, I) => (I >= this.scopeState.startIdx && I <= this.scopeState.endIdx) ? <Animated.View key={I} style={{...itemStyle, opacity: I == selectedIdx ? 1 : 0.5, transform: [
+                                    items.map((T, I) => (I >= this.scopeState.startIdx && I <= this.scopeState.endIdx) ? <Animated.View key={I} style={{...itemStyle, opacity: I == selectedIdx ? 1 : 0.55, transform: [
                                         { perspective: perspective },
                                         { rotateX: (I * -Angle + 90 + subAngle) + 'deg'},
                                         this.scopeState.rotateX,
                                         { translateY: circleR },
                                         { rotateX: '-90deg' }
         
-                                    ]}}><Text style={itemTextStyle}>{T.label}</Text></Animated.View> : null)
+                                    ]}}>
+                                        {
+                                            _this.props.item
+                                            &&
+                                            (
+                                                _this.props.item instanceof Function
+                                                &&
+                                                _this.props.item.apply(_this, [T])
+                                                ||
+                                                _this.props.item
+                                            )
+                                            ||
+                                            <Text style={itemTextStyle}>{T.label}</Text>
+                                        }
+                                    </Animated.View> : null)
                                 }
-                                <View style={{borderWidth:0.5, borderColor:_this.focusBoxBorderColor, borderLeftWidth:0, borderRightWidth:0, position:'absolute', width:'100%', height:itemHeight + 8}}></View>
+                                <View style={{borderWidth:0.5, borderColor:_this.focusBoxBorderColor, borderLeftWidth:0, borderRightWidth:0, position:'absolute', width:'100%', height:itemHeight + 6, transform:[
+                                    { perspective: perspective },
+                                    { rotateX: '90deg'},
+                                    { translateY: circleR },
+                                    { rotateX: '-90deg' }
+                                ]}}></View>
                             </View>    
                             <Animated.ScrollView ref={ele => !this.scrollView && (this.scrollView = ele)} style={ScrollView_Style} showsVerticalScrollIndicator={false}
                                 onScroll={
@@ -449,8 +471,20 @@ class Picker extends React.Component {
         }
 
         return <>
-            <TouchableOpacity>
-                <Text style={inputStyle} onPress={this.show}>{displayText}</Text>
+            <TouchableOpacity onPress={this.show}>
+                {
+                    this.props.input
+                    &&
+                    (
+                        this.props.input instanceof Function
+                        &&
+                        this.props.input.apply(this, [])
+                        ||
+                        this.props.input
+                    )
+                    ||
+                    <Text style={inputStyle}>{displayText}</Text>
+                }
             </TouchableOpacity>
         </>;
     }
