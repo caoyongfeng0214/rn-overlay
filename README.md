@@ -29,7 +29,7 @@ Demo:
 
 * ~~Toast~~ (done)
 * Dialog
-* Picker (doing)
+* Picker (done)
 * DateTime
 
 # Installation
@@ -52,7 +52,9 @@ AppRegistry.registerComponent(appName, () => App);
 # Usage
 
 * **[Toast](https://github.com/caoyongfeng0214/rn-overlay/wiki/Toast)**
+* **Dialog**
 * **[Picker](https://github.com/caoyongfeng0214/rn-overlay/wiki/Picker)**
+* **DateTime**
 
 ```js
 import React from 'react';

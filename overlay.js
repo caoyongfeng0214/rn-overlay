@@ -28,8 +28,8 @@ if(!ReactNative.Overlay) {
         static INDEX = 0; // for generate OverlayName
 
         // show a Overlay
-        static show = function({ style, scopeState, children, onShow, onClose, enableBackPress }) {
-            let overlay = new ReactNative.Overlay({ style, scopeState, children, onShow, onClose, enableBackPress, __noOwner__: true });
+        static show = function({ style, scopeState, children, onShow, onClose, enableBackPress, onInit }) {
+            let overlay = new ReactNative.Overlay({ style, scopeState, children, onShow, onClose, enableBackPress, onInit, __noOwner__: true });
             overlay.componentDidMount();
             overlay.show();
             return overlay;
@@ -54,16 +54,18 @@ if(!ReactNative.Overlay) {
                     } else {
                         this.removeDisableBackPress();
                     }
-                    if(this.props.onClose) {
-                        if(old && !val) {
-                            this.props.onClose.apply(this, []);
-                        }
-                    }
-                    if(this.props.onShow) {
-                        if(!old && val) {
-                            this.props.onShow.apply(this, []);
-                        }
-                    }
+
+                    // fire onClose | onShow be moved to OverlayItem.componentDidMount | OverlayItem.componentWillUnmount
+                    // if(this.props.onClose) {
+                    //     if(old && !val) {
+                    //         this.props.onClose.apply(this, []);
+                    //     }
+                    // }
+                    // if(this.props.onShow) {
+                    //     if(!old && val) {
+                    //         this.props.onShow.apply(this, []);
+                    //     }
+                    // }
                 }
             });
 
@@ -156,10 +158,26 @@ if(!ReactNative.Overlay) {
             }
 
             this.state = props.scopeState ? {...props.scopeState} : {};
+
+            if(props.onInit && props.onInit instanceof Function) {
+                props.onInit.apply(this, []);
+            }
+        }
+
+        componentDidMount() {
+            if(this.props.overlay && this.props.overlay.props.onShow) {
+                this.props.overlay.props.onShow.apply(this.props.overlay, []);
+            }
+        }
+
+        componentWillUnmount() {
+            if(this.props.overlay && this.props.overlay.props.onClose) {
+                this.props.overlay.props.onClose.apply(this.props.overlay, []);
+            }
         }
 
         render() {
-            let sty = {backgroundColor: 'rgba(88, 88, 88, 0.6)', ...(this.props.style || {})};
+            let sty = {backgroundColor: 'rgba(88, 88, 88, 0.5)', ...(this.props.style || {})};
             // if not defined STYLE, or defined POSITON(left|right|top|bottom), or defined size(width|height), then use default value({left:0, right:0, top:0, bottom:0})
             if(!this.props.style) {
                 sty.left = sty.right = sty.top = sty.bottom = 0;
@@ -174,6 +192,8 @@ if(!ReactNative.Overlay) {
             // style.position MUST is 'absolute'
             sty.position = 'absolute';
             sty.zIndex = sty.elevation = 999999999;
+            // style.overflow MUST is 'hidden'
+            sty.overflow = 'hidden';
 
             return <View key={this.$Name} style={sty}>
                 {this.props.children instanceof Function ? this.props.children.apply(this.props.overlay, []) : this.props.children}
@@ -238,6 +258,7 @@ if(!ReactNative.Overlay) {
                                 key={overlay.$Name}
                                 name={overlay.$Name}
                                 scopeState={overlay.props.scopeState}
+                                onInit={overlay.props.onInit}
                                 style={overlay.props.style}
                                 children={overlay.props.children}
                                 overlay={overlay}
