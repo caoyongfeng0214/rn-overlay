@@ -1,6 +1,6 @@
 # rn-overlay | react-native-overlay
 
-Overlay component for React Native, same as [Modal component](https://reactnative.dev/docs/modal). contains: [Overlay](https://github.com/caoyongfeng0214/rn-overlay#usage)(fixed View), [Toast](https://github.com/caoyongfeng0214/rn-overlay/wiki/Toast)(message), Picker (select), DateTime, Dialog.
+Overlay component for React Native, same as [Modal component](https://reactnative.dev/docs/modal). contains: [Overlay](https://github.com/caoyongfeng0214/rn-overlay#usage)(fixed View), [Toast](https://github.com/caoyongfeng0214/rn-overlay/wiki/Toast)(message), [Picker](https://github.com/caoyongfeng0214/rn-overlay/wiki/Picker)(select), DateTime, Dialog.
 
 you can place it to anywhere, it will float in front of all views. it can be place to a Modal component and cover the Modal component.
 
@@ -51,6 +51,7 @@ AppRegistry.registerComponent(appName, () => App);
 # Usage
 
 * **[Toast](https://github.com/caoyongfeng0214/rn-overlay/wiki/Toast)**
+* **[Picker](https://github.com/caoyongfeng0214/rn-overlay/wiki/Picker)**
 
 ```js
 import React from 'react';
