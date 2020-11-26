@@ -13,6 +13,7 @@ Contact me: me@caoyongfeng.com
 > * [Modal component](https://reactnative.dev/docs/modal) is not applicable in some scenarios.
 > * Why some UI components need to reference native modules ? e.g. [Toast](https://reactnative.dev/docs/toastandroid)、[Picker](https://github.com/react-native-picker/picker) ......
 > * Why are the development and experience of Android and iOS inconsistent ? e.g. [Picker](https://github.com/react-native-picker/picker) ......
+> * I want to make some things easier and consistent.
 
 ---
 
