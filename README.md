@@ -29,7 +29,7 @@ Demo:
 
 * ~~Toast~~ (done)
 * Dialog
-* Picker (done)
+* ~~Picker~~ (done)
 * DateTime
 
 # Installation
