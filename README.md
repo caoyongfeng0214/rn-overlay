@@ -21,7 +21,7 @@ Demo:
 
 ![react native overlay demo](https://user-images.githubusercontent.com/14923844/99891471-06c91700-2ca5-11eb-8573-10f15b954b02.gif)
 ![react native Toast demo](https://user-images.githubusercontent.com/14923844/99892158-fae15300-2cac-11eb-9f54-7c0736498e1c.gif)
-![react native picker demo select](https://user-images.githubusercontent.com/14923844/100351944-37071180-3027-11eb-80ea-312228f480b2.gif)
+![react native picker demo select](https://user-images.githubusercontent.com/14923844/100457223-9e42c580-30fc-11eb-9f96-5445ced8ff44.gif)
 
 [Demo Source Code](https://github.com/caoyongfeng0214/rn-overlay/wiki/Demo-Source-Code)
 
