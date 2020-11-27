@@ -32,6 +32,20 @@ const Fixed_Container_Style = {
     display: 'flex',
     position: 'relative',
     alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row'
+};
+
+const Fixed_Column_Style = {
+    paddingTop: 0,
+    paddingBottom: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    marginTop: 0,
+    marginBottom: 0,
+    display: 'flex',
+    position: 'relative',
+    alignItems: 'center',
     justifyContent: 'center'
 };
 
@@ -56,7 +70,8 @@ const ScrollView_Style = {
 };
 
 const ContainerFrame_Style = {
-    flexGrow:0, flexShrink:0
+    flexGrow:0,
+    flexShrink:0
 };
 
 // min height of select option
@@ -79,8 +94,12 @@ const AngleSin = Math.sin(Angle / 2 * Math.PI / 180);
 //      closeText: String.
 //      confirmText: String.
 //      focusBoxBorderColor: String(color). borderColor of container of current selected item
+//      splitColor: String(color). split color between columns.
+//      titleStyle: style of columnTitle. same as Text component. https://reactnative.dev/docs/text
+//      items.columns[X].titleStyle. style of the columnTitle. same as Text component. https://reactnative.dev/docs/text
+//      items.columns[X].style. style of the column. same as View component. https://reactnative.dev/docs/view
 //      head: Component or function.
-//      items: Array. item: { label: 'xxxxx', value: 9 }
+//      items: Array or Object. item: { label: 'xxxxx', value: 9 }
 //      onShow: function. callback funtion on shown
 //      onClose: function. callback function on closed
 //      onConfirm: function. fire when click confirm button
@@ -115,6 +134,11 @@ class Picker extends React.Component {
         backgroundColor: '#232831'
     };
 
+    static defaultColumnStyle = {
+        flexGrow: 1,
+        flexShrink: 1
+    };
+
     static defaultHeadStyle = {
         backgroundColor: '#16191f',
         paddingVertical: 12,
@@ -146,6 +170,19 @@ class Picker extends React.Component {
         fontSize: 18
     };
 
+    static defaultSplitColor = '#181818';
+
+    static defaultTitleStyle = {
+        backgroundColor: '#3c4148',
+        paddingVertical: 6,
+        flexDirection:"row",
+        justifyContent:"center",
+        alignItems: 'center',
+        width: '100%',
+        textAlign: 'center',
+        color: '#9c9c9c'
+    };
+
 
     constructor(props) {
         super(props);
@@ -159,14 +196,27 @@ class Picker extends React.Component {
     // display text in input
     get displayText() {
         if(this.props.items && this.props.value !== undefined) {
-            let item = this.props.items.find(T => T.value === this.props.value);
-            if(item) {
-                return item.label;
+            if(this.props.items instanceof Array) {
+                let item = this.props.items.find(T => T.value === this.props.value);
+                if(item) {
+                    return item.label;
+                }
+            } else if(this.props.items.columns && this.props.items.columns instanceof Array && this.props.value instanceof Array) {
+                let vals = [];
+                for(let i = 0; i < this.props.items.columns.length; i++) {
+                    if(this.props.value[i] !== undefined) {
+                        let column = this.props.items.columns[i];
+                        if(column.items && column.items instanceof Array) {
+                            let item = column.items.find(T => T.value === this.props.value[i]);
+                            if(item) {
+                                vals.push(item.label);
+                            }
+                        }
+                    }
+                }
+                return vals.join('，');
             }
         }
-        // if(this.props.placeholder) {
-        //     return this.props.placeholder;
-        // }
         return '';
     }
 
@@ -221,29 +271,72 @@ class Picker extends React.Component {
         return {...Picker.defaultConfirmTextStyle, ...(this.props.confirmTextStyle || {})};
     }
 
+    // split color between columns
+    get splitColor() {
+        return this.props.splitColor || Picker.defaultSplitColor;
+    }
+
+    // style of column title
+    get titleStyle() {
+        return {...Picker.defaultTitleStyle, ...(this.props.titleStyle || {})};
+    }
+
     show = () => {
         let _this = this;
         let itemStyle = _this.itemStyle, itemHeight = itemStyle.height,
             itemTextStyle = _this.itemTextStyle,
             containerStyle = _this.containerStyle,
-            items = _this.props.items || [],
             itemsBoxHeight = 7 * itemHeight,
             circleR = Math.ceil(itemHeight / 2 / AngleSin), perspective = circleR * 5,
-            scrollLen = itemsBoxHeight / 18 * items.length, scrollContentH = itemsBoxHeight + scrollLen,
-            scrollStep = scrollLen / (items.length - 1);
-
-        let selectedIdx = _this.props.value === undefined ? 0 : items.findIndex(T => T.value === _this.props.value),
-            subAngle = 0, startIdx = 0, endIdx = 0;
-        if(selectedIdx < 0) {
-            selectedIdx = 0;
-            endIdx = 3;
-        } else {
-            startIdx = selectedIdx - 3;
-            if(startIdx < 0) {
-                startIdx = 0;
-            }
-            endIdx = selectedIdx + 3;
+            items = _this.props.items || [];
+        
+        if(items instanceof Array) {
+            items = { columns: [{items: items}] };
         }
+
+        let values = _this.props.value || [];
+        if(!(values instanceof Array)) {
+            values = [values];
+        }
+
+        let selectedIdxs = [], startIdxs = [], endIdxs = [], scrollLens = [], scrollContentHs = [], scrollSteps = [],
+            hasTitle = false;
+        items.columns.map((C, I) => {
+            if(!C.items || !(C.items instanceof Array)) {
+                C.items = [];
+            }
+            let selectedIdx = values[I] === undefined ? 0 : C.items.findIndex(T => T.value === values[I]),
+                startIdx = 0, endIdx = 0;
+
+            if(selectedIdx < 0) {
+                selectedIdx = 0;
+                endIdx = 3;
+            } else {
+                startIdx = selectedIdx - 3;
+                if(startIdx < 0) {
+                    startIdx = 0;
+                }
+                endIdx = selectedIdx + 3;
+            }
+
+            selectedIdxs.push(selectedIdx);
+            startIdxs.push(startIdx);
+            endIdxs.push(endIdx);
+
+            let scrollLen = itemsBoxHeight / 18 * C.items.length, scrollContentH = itemsBoxHeight + scrollLen,
+                scrollStep = scrollLen / (C.items.length - 1);
+            if(scrollStep <= 0) {
+                scrollStep = 1;
+            }
+            scrollLens.push(scrollLen);
+            scrollContentHs.push(scrollContentH);
+            scrollSteps.push(scrollStep);
+
+            if(C.title) {
+                hasTitle = true;
+            }
+        });
+
         _this.overlay = ReactNative.Overlay.show({
             style: { backgroundColor: 'rgba(188, 188, 188, 0.2)' },
             children: function() {
@@ -267,9 +360,11 @@ class Picker extends React.Component {
                                     _this.props.onShow.apply(_this, []);
                                 }
                             });
-                            if(selectedIdx > 0 && this.scrollView) {
-                                this.scrollView.scrollTo({y: scrollStep * selectedIdx, animated: false});
-                            }
+                            items.columns.forEach((C, I) => {
+                                if(selectedIdxs[I] > 0 && _this.overlay.scrollViews[I]) {
+                                    _this.overlay.scrollViews[I].scrollTo({y: scrollSteps[I] * selectedIdxs[I], animated: false});
+                                }
+                            });
                         }}>
                         {
                             _this.props.head
@@ -294,128 +389,148 @@ class Picker extends React.Component {
                             </View>
                         }
                         <View style={containerStyle}>
-                            <View style={{...ItemsBox_Style, height: itemsBoxHeight}}>
-                                {
-                                    items.map((T, I) => (I >= this.scopeState.startIdx && I <= this.scopeState.endIdx) ? <Animated.View key={I} style={{...itemStyle, opacity: I == selectedIdx ? 1 : 0.55, transform: [
-                                        { perspective: perspective },
-                                        { rotateX: (I * -Angle + 90 + subAngle) + 'deg'},
-                                        this.scopeState.rotateX,
-                                        { translateY: circleR },
-                                        { rotateX: '-90deg' }
-        
-                                    ]}}>
+                            {
+                                items.columns.map((C, CI) => {
+                                    return <View style={{...Picker.defaultColumnStyle, ...(C.style || {}), ...Fixed_Column_Style, ...(CI > 0 ? { borderLeftWidth:1, borderLeftColor:_this.splitColor } : {})}} key={CI}>
                                         {
-                                            _this.props.item
+                                            hasTitle
                                             &&
-                                            (
-                                                _this.props.item instanceof Function
-                                                &&
-                                                _this.props.item.apply(_this, [T])
-                                                ||
-                                                _this.props.item
-                                            )
-                                            ||
-                                            <Text style={itemTextStyle}>{T.label}</Text>
+                                            <Text style={{..._this.titleStyle, ...(C.titleStyle || {})}}>{C.title || ' '}</Text>
                                         }
-                                    </Animated.View> : null)
-                                }
-                                <View style={{borderWidth:0.5, borderColor:_this.focusBoxBorderColor, borderLeftWidth:0, borderRightWidth:0, position:'absolute', width:'100%', height:itemHeight + 6, transform:[
-                                    { perspective: perspective },
-                                    { rotateX: '90deg'},
-                                    { translateY: circleR },
-                                    { rotateX: '-90deg' }
-                                ]}}></View>
-                            </View>    
-                            <Animated.ScrollView ref={ele => !this.scrollView && (this.scrollView = ele)} style={ScrollView_Style} showsVerticalScrollIndicator={false}
-                                onScroll={
-                                    Animated.event([
-                                        {
-                                            nativeEvent: {
-                                                contentOffset: {
-                                                    y: this.scopeState.rv
+                                        <View style={{...ItemsBox_Style, height: itemsBoxHeight}}>
+                                            {
+                                                C.items.map((T, I) => (I >= this.scopeState.startIdxs[CI] && I <= this.scopeState.endIdxs[CI]) ? <Animated.View key={I} style={{...itemStyle, opacity: I == selectedIdxs[CI] ? 1 : 0.55, transform: [
+                                                    { perspective: perspective },
+                                                    { rotateX: (I * -Angle + 90) + 'deg'},
+                                                    this.scopeState.rotateXs[CI],
+                                                    { translateY: circleR },
+                                                    { rotateX: '-90deg' }
+                    
+                                                ]}}>
+                                                    {
+                                                        _this.props.item
+                                                        &&
+                                                        (
+                                                            _this.props.item instanceof Function
+                                                            &&
+                                                            _this.props.item.apply(_this, [T])
+                                                            ||
+                                                            _this.props.item
+                                                        )
+                                                        ||
+                                                        <Text style={itemTextStyle}>{T.label}</Text>
+                                                    }
+                                                </Animated.View> : null)
+                                            }
+                                            <View style={{borderWidth:0.5, borderColor:_this.focusBoxBorderColor, borderLeftWidth:0, borderRightWidth:0, position:'absolute', width:'100%', height:itemHeight + 6, transform:[
+                                                { perspective: perspective },
+                                                { rotateX: '90deg'},
+                                                { translateY: circleR },
+                                                { rotateX: '-90deg' }
+                                            ]}}></View>
+                                            <Animated.ScrollView ref={ele => !_this.overlay.scrollViews[CI] && (_this.overlay.scrollViews[CI] = ele)} style={ScrollView_Style} showsVerticalScrollIndicator={false}
+                                                onScroll={
+                                                    Animated.event([
+                                                        {
+                                                            nativeEvent: {
+                                                                contentOffset: {
+                                                                    y: this.scopeState.rvs[CI]
+                                                                }
+                                                            }
+                                                        }
+                                                    ], {
+                                                        useNativeDriver: true,
+                                                        listener: (e) => {
+                                                            let n = parseInt(e.nativeEvent.contentOffset.y / scrollSteps[CI]),
+                                                                lave = e.nativeEvent.contentOffset.y - n * scrollSteps[CI];
+                                                            if(lave >= scrollSteps[CI] / 2) {
+                                                                n++;
+                                                            }
+                                                            startIdxs[CI] = n - 3;
+                                                            endIdxs[CI] = n + 3;
+                                                            selectedIdxs[CI] = n;
+                                                            this.setScopeState((state) => {
+                                                                state.startIdxs[CI] = startIdxs[CI];
+                                                                state.endIdxs[CI] = endIdxs[CI];
+                                                                return state;
+                                                            });
+                                                        }
+                                                    })
                                                 }
-                                            }
-                                        }
-                                    ], {
-                                        useNativeDriver: true,
-                                        listener: (e) => {
-                                            let n = parseInt(e.nativeEvent.contentOffset.y / scrollStep),
-                                                lave = e.nativeEvent.contentOffset.y - n * scrollStep;
-                                            if(lave >= scrollStep / 2) {
-                                                n++;
-                                            }
-                                            startIdx = n - 3;
-                                            endIdx = n + 3;
-                                            selectedIdx = n;
-                                            this.setScopeState({
-                                                startIdx: startIdx,
-                                                endIdx: endIdx
-                                            });
-                                        }
-                                    })
-                                }
-                                onScrollEndDrag = {(e) => {
-                                    let n = parseInt(e.nativeEvent.contentOffset.y / scrollStep),
-                                        lave = e.nativeEvent.contentOffset.y - n * scrollStep;
-                                    if(lave >= scrollStep / 2) {
-                                        n++;
-                                    }
-                                    let _target = e.target;
-                                    e.__detectEndTimer__ = setTimeout(() => {
-                                        if(e.__detectEndTimer__) {
-                                            _target.scrollTo({y:n * scrollStep, animated:false});
-                                            if(_this.props.onChange && _this.props.onChange instanceof Function) {
-                                                let selectedItem = items[n], selectedVal = undefined;
-                                                if(selectedItem) {
-                                                    selectedVal = selectedItem.value;
-                                                }
-                                                _this.props.onChange.apply(_this, [selectedVal, n, selectedItem]);
-                                            }
-                                        }
-                                    }, 0);
-                                }}
-                                onMomentumScrollBegin = {(e) => {
-                                    clearTimeout(e.nativeEvent.__detectEndTimer__);
-                                    e.__detectEndTimer__ = undefined;
-                                }}
-                                onMomentumScrollEnd = {(e) => {
-                                    let n = parseInt(e.nativeEvent.contentOffset.y / scrollStep),
-                                        lave = e.nativeEvent.contentOffset.y - n * scrollStep;
-                                    if(lave >= scrollStep / 2) {
-                                        n++;
-                                    }
-                                    e.target.scrollTo({y:n * scrollStep, animated:false});
-                                    if(_this.props.onChange && _this.props.onChange instanceof Function) {
-                                        let selectedItem = items[n], selectedVal = undefined;
-                                        if(selectedItem) {
-                                            selectedVal = selectedItem.value;
-                                        }
-                                        _this.props.onChange.apply(_this, [selectedVal, n, selectedItem]);
-                                    }
-                                }}
-                            >
-                                <View style={{height: scrollContentH}}></View>
-                            </Animated.ScrollView>
+                                                onScrollEndDrag = {(e) => {
+                                                    let n = parseInt(e.nativeEvent.contentOffset.y / scrollSteps[CI]),
+                                                        lave = e.nativeEvent.contentOffset.y - n * scrollSteps[CI];
+                                                    if(lave >= scrollSteps[CI] / 2) {
+                                                        n++;
+                                                    }
+                                                    let _target = e.target;
+                                                    e.__detectEndTimer__ = setTimeout(() => {
+                                                        if(e.__detectEndTimer__) {
+                                                            _target.scrollTo({y:n * scrollSteps[CI], animated:false});
+                                                            if(_this.props.onChange && _this.props.onChange instanceof Function) {
+                                                                let selectedItem = C.items[n], selectedVal = undefined;
+                                                                if(selectedItem) {
+                                                                    selectedVal = selectedItem.value;
+                                                                }
+                                                                _this.props.onChange.apply(_this, [selectedVal, n, selectedItem, CI]);
+                                                            }
+                                                        }
+                                                    }, 0);
+                                                }}
+                                                onMomentumScrollBegin = {(e) => {
+                                                    clearTimeout(e.nativeEvent.__detectEndTimer__);
+                                                    e.__detectEndTimer__ = undefined;
+                                                }}
+                                                onMomentumScrollEnd = {(e) => {
+                                                    let n = parseInt(e.nativeEvent.contentOffset.y / scrollSteps[CI]),
+                                                        lave = e.nativeEvent.contentOffset.y - n * scrollSteps[CI];
+                                                    if(lave >= scrollSteps[CI] / 2) {
+                                                        n++;
+                                                    }
+                                                    e.target.scrollTo({y:n * scrollSteps[CI], animated:false});
+                                                    if(_this.props.onChange && _this.props.onChange instanceof Function) {
+                                                        let selectedItem = C.items[n], selectedVal = undefined;
+                                                        if(selectedItem) {
+                                                            selectedVal = selectedItem.value;
+                                                        }
+                                                        _this.props.onChange.apply(_this, [selectedVal, n, selectedItem, CI]);
+                                                    }
+                                                }}
+                                            >
+                                                <View style={{height: scrollContentHs[CI]}}></View>
+                                            </Animated.ScrollView>
+                                        </View>
+                                    </View>;
+                                })
+                            }
                         </View>
                     </Animated.View>
                 </>;
             },
             onInit: function() {
                 let _state = {
-                    startIdx: startIdx,
-                    endIdx: endIdx,
-                    fadeInY: new Animated.Value(1000),
-                    rv: new Animated.Value(0)
+                    startIdxs: startIdxs,
+                    endIdxs: endIdxs,
+                    fadeInY: new Animated.Value(1000)
                 };
         
-                let xv = _state.rv.interpolate({
-                    inputRange: [0, scrollLen],
-                    outputRange: ['0deg', (Angle * (items.length - 1)) + 'deg']
+                let _rvs = [], _rotateXs = [];
+                items.columns.map((C, I) => {
+                    let rv = new Animated.Value(0);
+                    let xv = rv.interpolate({
+                        inputRange: [0, scrollLens[I]],
+                        outputRange: ['0deg', (Angle * (C.items.length - 1)) + 'deg']
+                    });
+                    _rvs.push(rv);
+                    _rotateXs.push({rotateX: xv});
                 });
-        
-                _state.rotateX = {rotateX: xv};
+                
+                _state.rvs = _rvs;
+                _state.rotateXs = _rotateXs;
         
                 this.state = _state;
+
+                _this.overlay.scrollViews = [];
             },
             onClose: function() {
                 if(_this.props.onClose && _this.props.onClose instanceof Function) {
@@ -425,11 +540,24 @@ class Picker extends React.Component {
         });
         _this.overlay.fireConfirm = () => {
             if(_this.props.onConfirm && _this.props.onConfirm instanceof Function) {
-                let selectedItem = items[selectedIdx], selectedVal = undefined;
-                if(selectedItem) {
-                    selectedVal = selectedItem.value;
+                let selectedItem = undefined, selectedVal = undefined;
+                if(_this.props.items) {
+                    if(_this.props.items instanceof Array) {
+                        selectedItem = _this.props.items.find(T => T.value === selectedIdxs[0]);
+                        if(selectedItem) {
+                            selectedVal = selectedItem.value;
+                        }
+                    } else {
+                        selectedItem = [];
+                        selectedVal = [];
+                        selectedIdxs.forEach((C, I) => {
+                            let item = _this.props.items.columns[I].items.find(T => T.value === C);
+                            selectedItem.push(item);
+                            selectedVal.push(item ? item.value : undefined);
+                        });
+                    }
                 }
-                _this.props.onConfirm.apply(_this, [selectedVal, selectedIdx, selectedItem]);
+                _this.props.onConfirm.apply(_this, [selectedVal, selectedIdxs, selectedItem]);
             }
             _this.close();
         };
