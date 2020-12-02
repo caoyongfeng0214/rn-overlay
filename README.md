@@ -1,6 +1,6 @@
 # rn-overlay | react-native-overlay
 
-Overlay component for React Native, same as [Modal component](https://reactnative.dev/docs/modal). contains: [Overlay](https://github.com/caoyongfeng0214/rn-overlay#usage)(fixed View), [Toast](https://github.com/caoyongfeng0214/rn-overlay/wiki/Toast)(message), [Picker](https://github.com/caoyongfeng0214/rn-overlay/wiki/Picker)(select), DateTime, Dialog.
+Overlay component for React Native, same as [Modal component](https://reactnative.dev/docs/modal). contains: [Overlay](https://github.com/caoyongfeng0214/rn-overlay#usage)(fixed View), [Toast](https://github.com/caoyongfeng0214/rn-overlay/wiki/Toast)(message), [Picker](https://github.com/caoyongfeng0214/rn-overlay/wiki/Picker)(select), [DateTime](https://github.com/caoyongfeng0214/rn-overlay/wiki/DateTime), Dialog.
 
 you can place it to anywhere, it will float in front of all views. it can be place to a Modal component and cover the Modal component.
 
@@ -22,6 +22,7 @@ Demo:
 ![react native overlay demo](https://user-images.githubusercontent.com/14923844/99891471-06c91700-2ca5-11eb-8573-10f15b954b02.gif)
 ![react native Toast demo](https://user-images.githubusercontent.com/14923844/99892158-fae15300-2cac-11eb-9f54-7c0736498e1c.gif)
 ![react native picker demo select](https://user-images.githubusercontent.com/14923844/100457223-9e42c580-30fc-11eb-9f96-5445ced8ff44.gif)
+![react native datetime demo](https://user-images.githubusercontent.com/14923844/100917590-4fd56280-3512-11eb-89b4-2b84b7b64b44.gif)
 
 [Demo Source Code](https://github.com/caoyongfeng0214/rn-overlay/wiki/Demo-Source-Code)
 
@@ -30,7 +31,7 @@ Demo:
 * ~~Toast~~ (done)
 * Dialog
 * ~~Picker~~ (done)
-* DateTime
+* ~~DateTime~~ (done)
 
 # Installation
 
@@ -54,7 +55,7 @@ AppRegistry.registerComponent(appName, () => App);
 * **[Toast](https://github.com/caoyongfeng0214/rn-overlay/wiki/Toast)**
 * **Dialog**
 * **[Picker](https://github.com/caoyongfeng0214/rn-overlay/wiki/Picker)**
-* **DateTime**
+* **[DateTime](https://github.com/caoyongfeng0214/rn-overlay/wiki/DateTime)**
 
 ```js
 import React from 'react';
