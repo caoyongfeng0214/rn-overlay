@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, TouchableOpacity, TouchableWithoutFeedback, Animated, Easing } from 'react-native';
+import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Animated, Easing } from 'react-native';
 
 let ReactNative = require("react-native");
 
@@ -196,25 +196,40 @@ class Picker extends React.Component {
     // display text in input
     get displayText() {
         if(this.props.items && this.props.value !== undefined) {
-            if(this.props.items instanceof Array) {
-                let item = this.props.items.find(T => T.value === this.props.value);
-                if(item) {
-                    return item.label;
-                }
-            } else if(this.props.items.columns && this.props.items.columns instanceof Array && this.props.value instanceof Array) {
-                let vals = [];
-                for(let i = 0; i < this.props.items.columns.length; i++) {
-                    if(this.props.value[i] !== undefined) {
-                        let column = this.props.items.columns[i];
-                        if(column.items && column.items instanceof Array) {
-                            let item = column.items.find(T => T.value === this.props.value[i]);
-                            if(item) {
-                                vals.push(item.label);
+            if(this.props.value !== this._value) {
+                this._value = this.props.value;
+                if(this.props.items instanceof Array) {
+                    let item = this.props.items.find(T => T.value === this.props.value);
+                    if(item) {
+                        if(this.props.display && this.props.display instanceof Function) {
+                            this._displayText = this.props.display.apply(this, [item]);
+                        } else {
+                            this._displayText = item.label;
+                        }
+                        return this._displayText;
+                    }
+                } else if(this.props.items.columns && this.props.items.columns instanceof Array && this.props.value instanceof Array) {
+                    let vals = [];
+                    for(let i = 0; i < this.props.items.columns.length; i++) {
+                        if(this.props.value[i] !== undefined) {
+                            let column = this.props.items.columns[i];
+                            if(column.items && column.items instanceof Array) {
+                                let item = column.items.find(T => T.value === this.props.value[i]);
+                                if(item) {
+                                    vals.push(item.label);
+                                }
                             }
                         }
                     }
+                    if(this.props.display && this.props.display instanceof Function) {
+                        this._displayText = this.props.display.apply(this, [vals]);
+                    } else {
+                        this._displayText = vals.join('，');
+                    }
+                    return this._displayText;
                 }
-                return vals.join('，');
+            } else {
+                return this._displayText;
             }
         }
         return '';
@@ -287,55 +302,54 @@ class Picker extends React.Component {
             itemTextStyle = _this.itemTextStyle,
             containerStyle = _this.containerStyle,
             itemsBoxHeight = 7 * itemHeight,
-            circleR = Math.ceil(itemHeight / 2 / AngleSin), perspective = circleR * 5,
-            items = _this.props.items || [];
+            circleR = Math.ceil(itemHeight / 2 / AngleSin), perspective = circleR * 5;
         
-        if(items instanceof Array) {
-            items = { columns: [{items: items}] };
-        }
+        // if(items instanceof Array) {
+        //     items = { columns: [{items: items}] };
+        // }
 
-        let values = _this.props.value || [];
-        if(!(values instanceof Array)) {
-            values = [values];
-        }
+        // let values = _this.props.value || [];
+        // if(!(values instanceof Array)) {
+        //     values = [values];
+        // }
 
         let selectedIdxs = [], startIdxs = [], endIdxs = [], scrollLens = [], scrollContentHs = [], scrollSteps = [],
             hasTitle = false;
-        items.columns.map((C, I) => {
-            if(!C.items || !(C.items instanceof Array)) {
-                C.items = [];
-            }
-            let selectedIdx = values[I] === undefined ? 0 : C.items.findIndex(T => T.value === values[I]),
-                startIdx = 0, endIdx = 0;
+        // items.columns.map((C, I) => {
+        //     if(!C.items || !(C.items instanceof Array)) {
+        //         C.items = [];
+        //     }
+        //     let selectedIdx = values[I] === undefined ? 0 : C.items.findIndex(T => T.value === values[I]),
+        //         startIdx = 0, endIdx = 0;
 
-            if(selectedIdx < 0) {
-                selectedIdx = 0;
-                endIdx = 3;
-            } else {
-                startIdx = selectedIdx - 3;
-                if(startIdx < 0) {
-                    startIdx = 0;
-                }
-                endIdx = selectedIdx + 3;
-            }
+        //     if(selectedIdx < 0) {
+        //         selectedIdx = 0;
+        //         endIdx = 3;
+        //     } else {
+        //         startIdx = selectedIdx - 3;
+        //         if(startIdx < 0) {
+        //             startIdx = 0;
+        //         }
+        //         endIdx = selectedIdx + 3;
+        //     }
 
-            selectedIdxs.push(selectedIdx);
-            startIdxs.push(startIdx);
-            endIdxs.push(endIdx);
+        //     selectedIdxs.push(selectedIdx);
+        //     startIdxs.push(startIdx);
+        //     endIdxs.push(endIdx);
 
-            let scrollLen = itemsBoxHeight / 18 * C.items.length, scrollContentH = itemsBoxHeight + scrollLen,
-                scrollStep = scrollLen / (C.items.length - 1);
-            if(scrollStep <= 0) {
-                scrollStep = 1;
-            }
-            scrollLens.push(scrollLen);
-            scrollContentHs.push(scrollContentH);
-            scrollSteps.push(scrollStep);
+        //     let scrollLen = itemsBoxHeight / 18 * C.items.length, scrollContentH = itemsBoxHeight + scrollLen,
+        //         scrollStep = scrollLen / (C.items.length - 1);
+        //     if(scrollStep <= 0) {
+        //         scrollStep = 1;
+        //     }
+        //     scrollLens.push(scrollLen);
+        //     scrollContentHs.push(scrollContentH);
+        //     scrollSteps.push(scrollStep);
 
-            if(C.title) {
-                hasTitle = true;
-            }
-        });
+        //     if(C.title) {
+        //         hasTitle = true;
+        //     }
+        // });
 
         _this.overlay = ReactNative.Overlay.show({
             style: { backgroundColor: 'rgba(188, 188, 188, 0.2)' },
@@ -360,7 +374,7 @@ class Picker extends React.Component {
                                     _this.props.onShow.apply(_this, []);
                                 }
                             });
-                            items.columns.forEach((C, I) => {
+                            this.items.columns.forEach((C, I) => {
                                 if(selectedIdxs[I] > 0 && _this.overlay.scrollViews[I]) {
                                     _this.overlay.scrollViews[I].scrollTo({y: scrollSteps[I] * selectedIdxs[I], animated: false});
                                 }
@@ -390,7 +404,7 @@ class Picker extends React.Component {
                         }
                         <View style={containerStyle}>
                             {
-                                items.columns.map((C, CI) => {
+                                this.items.columns.map((C, CI) => {
                                     return <View style={{...Picker.defaultColumnStyle, ...(C.style || {}), ...Fixed_Column_Style, ...(CI > 0 ? { borderLeftWidth:1, borderLeftColor:_this.splitColor } : {})}} key={CI}>
                                         {
                                             hasTitle
@@ -422,13 +436,13 @@ class Picker extends React.Component {
                                                     }
                                                 </Animated.View> : null)
                                             }
-                                            <View style={{borderWidth:0.5, borderColor:_this.focusBoxBorderColor, borderLeftWidth:0, borderRightWidth:0, position:'absolute', width:'100%', height:itemHeight + 6, transform:[
+                                            <View style={{borderWidth:0.5, borderColor:_this.focusBoxBorderColor, borderLeftWidth:0, borderRightWidth:0, position:'absolute', width:'100%', height:itemHeight + 4, transform:[
                                                 { perspective: perspective },
                                                 { rotateX: '90deg'},
                                                 { translateY: circleR },
                                                 { rotateX: '-90deg' }
                                             ]}}></View>
-                                            <Animated.ScrollView ref={ele => !_this.overlay.scrollViews[CI] && (_this.overlay.scrollViews[CI] = ele)} style={ScrollView_Style} showsVerticalScrollIndicator={false}
+                                            <Animated.ScrollView ref={ele => _this.overlay.scrollViews[CI] = ele} style={ScrollView_Style} showsVerticalScrollIndicator={false}
                                                 onScroll={
                                                     Animated.event([
                                                         {
@@ -508,7 +522,55 @@ class Picker extends React.Component {
                 </>;
             },
             onInit: function() {
+                let items = _this.props.items || [];
+        
+                if(items instanceof Array) {
+                    items = { columns: [{items: items}] };
+                }
+        
+                let values = _this.props.value || [];
+                if(!(values instanceof Array)) {
+                    values = [values];
+                }
+
+                items.columns.map((C, I) => {
+                    if(!C.items || !(C.items instanceof Array)) {
+                        C.items = [];
+                    }
+                    let selectedIdx = values[I] === undefined ? 0 : C.items.findIndex(T => T.value === values[I]),
+                        startIdx = 0, endIdx = 0;
+        
+                    if(selectedIdx < 0) {
+                        selectedIdx = 0;
+                        endIdx = 3;
+                    } else {
+                        startIdx = selectedIdx - 3;
+                        if(startIdx < 0) {
+                            startIdx = 0;
+                        }
+                        endIdx = selectedIdx + 3;
+                    }
+        
+                    selectedIdxs.push(selectedIdx);
+                    startIdxs.push(startIdx);
+                    endIdxs.push(endIdx);
+        
+                    let scrollLen = itemsBoxHeight / 18 * C.items.length, scrollContentH = itemsBoxHeight + scrollLen,
+                        scrollStep = scrollLen / (C.items.length - 1);
+                    if(scrollStep <= 0) {
+                        scrollStep = 1;
+                    }
+                    scrollLens.push(scrollLen);
+                    scrollContentHs.push(scrollContentH);
+                    scrollSteps.push(scrollStep);
+        
+                    if(C.title) {
+                        hasTitle = true;
+                    }
+                });
+
                 let _state = {
+                    // items: items,
                     startIdxs: startIdxs,
                     endIdxs: endIdxs,
                     fadeInY: new Animated.Value(1000)
@@ -528,6 +590,7 @@ class Picker extends React.Component {
                 _state.rvs = _rvs;
                 _state.rotateXs = _rotateXs;
         
+                this.props.overlay.items = items;
                 this.state = _state;
 
                 _this.overlay.scrollViews = [];
@@ -540,26 +603,106 @@ class Picker extends React.Component {
         });
         _this.overlay.fireConfirm = () => {
             if(_this.props.onConfirm && _this.props.onConfirm instanceof Function) {
-                let selectedItem = undefined, selectedVal = undefined;
-                if(_this.props.items) {
-                    if(_this.props.items instanceof Array) {
-                        selectedItem = _this.props.items.find(T => T.value === selectedIdxs[0]);
-                        if(selectedItem) {
-                            selectedVal = selectedItem.value;
-                        }
-                    } else {
-                        selectedItem = [];
-                        selectedVal = [];
-                        selectedIdxs.forEach((C, I) => {
-                            let item = _this.props.items.columns[I].items.find(T => T.value === C);
-                            selectedItem.push(item);
-                            selectedVal.push(item ? item.value : undefined);
-                        });
-                    }
-                }
-                _this.props.onConfirm.apply(_this, [selectedVal, selectedIdxs, selectedItem]);
+                // let selectedItem = undefined, selectedVal = undefined;
+                // if(_this.props.items) {
+                //     if(_this.props.items instanceof Array) {
+                //         selectedItem = _this.props.items.find(T => T.value === selectedIdxs[0]);
+                //         if(selectedItem) {
+                //             selectedVal = selectedItem.value;
+                //         }
+                //     } else {
+                //         selectedItem = [];
+                //         selectedVal = [];
+                //         selectedIdxs.forEach((C, I) => {
+                //             let item = _this.props.items.columns[I].items.find(T => T.value === C);
+                //             selectedItem.push(item);
+                //             selectedVal.push(item ? item.value : undefined);
+                //         });
+                //     }
+                // }
+                // _this.props.onConfirm.apply(_this, [selectedVal, selectedIdxs, selectedItem]);
+
+                _this.props.onConfirm.apply(_this, _this.getValue());
             }
             _this.close();
+        };
+        _this.overlay.updateItems = () => { // bad code ^_^
+            let vals = _this.getValue();
+
+            let items = _this.props.items || [];
+        
+            if(items instanceof Array) {
+                items = { columns: [{items: items}] };
+            }
+
+            scrollLens = [];
+            scrollContentHs = [];
+            scrollSteps = [];
+            items.columns.map((C, I) => {
+                if(!C.items || !(C.items instanceof Array)) {
+                    C.items = [];
+                }
+    
+                let scrollLen = itemsBoxHeight / 18 * C.items.length, scrollContentH = itemsBoxHeight + scrollLen,
+                    scrollStep = scrollLen / (C.items.length - 1);
+                if(scrollStep <= 0) {
+                    scrollStep = 1;
+                }
+                scrollLens.push(scrollLen);
+                scrollContentHs.push(scrollContentH);
+                scrollSteps.push(scrollStep);
+            });
+
+            _this.overlay.items = items;
+            //_this.overlay.setScopeState({items: items});
+    
+            let _rvs = [], _rotateXs = [];
+            items.columns.map((C, I) => {
+                if(vals[1][I] >= C.items.length) {
+                    vals[1][I] = C.items.length - 1;
+                }
+                startIdxs[I] = vals[1][I] - 3;
+                if(startIdxs[I] < 0) {
+                    startIdxs[I] = 0;
+                }
+                endIdxs[I] = vals[1][I] + 3;
+                _this.overlay.scrollViews[I].scrollTo({y: scrollSteps[I] * vals[1][I], animated: false});
+                let rv = new Animated.Value(scrollSteps[I] * vals[1][I]);
+                let xv = rv.interpolate({
+                    inputRange: [0, scrollLens[I]],
+                    outputRange: ['0deg', (Angle * (C.items.length - 1)) + 'deg']
+                });
+                _rvs.push(rv);
+                _rotateXs.push({rotateX: xv});
+            });
+            
+            _this.overlay.setScopeState({
+                startIdxs: startIdxs,
+                endIdxs: endIdxs,
+                rvs: _rvs,
+                rotateXs: _rotateXs
+            });
+        };
+
+        _this.getValue = () => {
+            let selectedItem = undefined, selectedVal = undefined;
+            if(_this.props.items) {
+                if(_this.props.items instanceof Array) {
+                    selectedItem = _this.props.items.find(T => T.value === selectedIdxs[0]);
+                    if(selectedItem) {
+                        selectedVal = selectedItem.value;
+                    }
+                } else {
+                    selectedItem = [];
+                    selectedVal = [];
+                    selectedIdxs.forEach((C, I) => {
+                        let item = _this.props.items.columns[I].items[C];
+                        selectedItem.push(item);
+                        selectedVal.push(item ? item.value : undefined);
+                    });
+                }
+            }
+            return [selectedVal, selectedIdxs, selectedItem];
         };
     }
 
@@ -579,6 +722,14 @@ class Picker extends React.Component {
     fireConfirm = () => {
         if(this.overlay) {
             this.overlay.fireConfirm();
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if(this.overlay) {
+            if(JSON.stringify(prevProps.items) !== JSON.stringify(this.props.items)) {
+                this.overlay.updateItems();
+            }
         }
     }
 

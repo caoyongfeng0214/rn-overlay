@@ -28,8 +28,8 @@ if(!ReactNative.Overlay) {
         static INDEX = 0; // for generate OverlayName
 
         // show a Overlay
-        static show = function({ style, scopeState, children, onShow, onClose, enableBackPress, onInit }) {
-            let overlay = new ReactNative.Overlay({ style, scopeState, children, onShow, onClose, enableBackPress, onInit, __noOwner__: true });
+        static show = function({ style, scopeState, children, onShow, onClose, enableBackPress, onInit, data }) {
+            let overlay = new ReactNative.Overlay({ style, scopeState, children, onShow, onClose, enableBackPress, onInit, data, __noOwner__: true });
             overlay.componentDidMount();
             overlay.show();
             return overlay;
